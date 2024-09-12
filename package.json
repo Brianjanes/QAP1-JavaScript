@@ -1,0 +1,20 @@
+{
+  "name": "generate-password",
+  "version": "1.0.0",
+  "description": "Generates a password of 8 lower case characters for the user. This can be edited using flags to include upper case, numbers and symbols.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "generate-password": "./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "picocolors": "^1.1.0"
+  }
+}
