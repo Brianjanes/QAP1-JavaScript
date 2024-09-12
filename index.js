@@ -1,54 +1,80 @@
 #!/usr/bin/env node
 
-// const setTimeout = require("node:timers/promises");
-// const p = require("@clack/prompts");
-// const process = require("node:process");
-// const color = require("picocolors");
-
 import * as p from "@clack/prompts";
 import { setTimeout } from "node:timers/promises";
-import color from "picocolors";
+import pc from "picocolors";
 import process from "node:process";
 
-// isolating the arguments from the command line
-// the first two arguments are the path to the node executable and the path to the script
+function printHelpMessage() {
+  console.log(`
+    Usage: generate-password [options]
+    
+    Options:
+        -l, --length <number>    Length of the password to generate (default: 8)
+        -h, --help               Display this help message
+    `);
+}
 
-// Checking for the user's input.
-// this ends up creating an array [arg0, arg1, arg2, ...] and is narutally separated by spaces so I think some array methods could come up.
+function parseArguments(args) {
+  const options = { length: 8 };
 
-// Removed for submission.
-// console.log(userArguments);
+  for (let i = 0; i < args.length; i++) {
+    switch (args[i]) {
+      case "-l":
+      case "--length":
+        const length = parseInt(args[i + 1]);
+        if (isNaN(length) || length <= 0) {
+          throw new Error("Invalid length. Please provide a positive number.");
+        }
+        options.length = length;
+        i++; // Skip the next argument as we've used it
+        break;
+      case "-h":
+      case "--help":
+        options.help = true;
+        break;
+      default:
+        throw new Error(`Unknown option: ${args[i]}`);
+    }
+  }
 
-// async function generatePassword() {
-//   // Setting the default values for the password generator
-//   let pwLength = 8;
-//   // initial password is empty
-//   let password = "";
+  return options;
+}
 
-//   const lowerChars = "abcdefghijklmnopqrstuvwxyz";
-//   const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//   const specialChars = "!@#$%^&*()_+";
-//   const numbers = "0123456789";
-
-//   console.log("Generating password...");
-// }
+function generatePassword(length) {
+  const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    password += lowerChars.charAt(
+      Math.floor(Math.random() * lowerChars.length)
+    );
+  }
+  return password;
+}
 
 async function main() {
-  const userArguments = process.argv.slice(2);
-  console.clear();
+  try {
+    const userArguments = process.argv.slice(2);
+    const options = parseArguments(userArguments);
 
-  p.intro(
-    `${color.bgMagenta(
-      color.white(
-        " Welcome. Let us find out how much of a CLI expert you REALLY are. "
-      )
-    )}`
-  );
+    if (options.help) {
+      printHelpMessage();
+      return;
+    }
 
-  const s = p.spinner();
-  s.start("Generating Password...");
-  await setTimeout(5000);
-  s.stop("Password Generated!");
+    console.clear();
+
+    const s = p.spinner();
+    s.start("Generating Password...");
+    await setTimeout(1000);
+    const generatedPassword = generatePassword(options.length);
+    s.stop("Password Generated!");
+
+    console.log(`\nYour password is: ${pc.green(generatedPassword)}\n`);
+  } catch (error) {
+    console.error(pc.red(`Error: ${error.message}`));
+    printHelpMessage();
+  }
 }
 
 main();
