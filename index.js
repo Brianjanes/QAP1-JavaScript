@@ -16,6 +16,9 @@ function printHelpMessage() {
         ${pc.yellow("-n, --numbers")}            ${pc.white(
     "Include numbers in the password"
   )}
+        ${pc.yellow("-c, --capitals")}           ${pc.white(
+    "Include capital letters in the password"
+  )}
         ${pc.yellow("-h, --help")}               ${pc.white(
     "Display this help message"
   )}
@@ -29,14 +32,14 @@ function printHelpMessage() {
   )}           ${pc.dim("# Generates a 12-character password")}
         ${pc.bold("generate-pw")} ${pc.yellow("-l")} ${pc.green(
     "10"
-  )} ${pc.yellow("-n")}        ${pc.dim(
-    "# Generates a 10-character password with numbers"
+  )} ${pc.yellow("-n -c")}     ${pc.dim(
+    "# Generates a 10-character password with numbers and capitals"
   )}
   `);
 }
 
 function parseArguments(args) {
-  const options = { length: 8, includeNumbers: false };
+  const options = { length: 8, includeNumbers: false, includeCapitals: false };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -55,6 +58,8 @@ function parseArguments(args) {
       }
     } else if (arg === "-n" || arg === "--numbers") {
       options.includeNumbers = true;
+    } else if (arg === "-c" || arg === "--capitals") {
+      options.includeCapitals = true;
     } else if (arg === "-h" || arg === "--help") {
       options.help = true;
     } else if (arg.startsWith("-")) {
@@ -74,10 +79,15 @@ function parseArguments(args) {
   return options;
 }
 
-function generatePassword(length, includeNumbers) {
+function generatePassword(length, includeNumbers, includeCapitals) {
   const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+  const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const numbers = "0123456789";
-  const chars = includeNumbers ? lowerChars + numbers : lowerChars;
+
+  let chars = lowerChars;
+  if (includeNumbers) chars += numbers;
+  if (includeCapitals) chars += upperChars;
+
   let password = "";
   for (let i = 0; i < length; i++) {
     password += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -87,13 +97,9 @@ function generatePassword(length, includeNumbers) {
 
 async function main() {
   try {
-    // Get all arguments passed to the script
     const allArgs = process.argv;
-
-    // Find the index of our script name
+    console.log(allArgs);
     const scriptIndex = allArgs.findIndex((arg) => arg.endsWith("generate-pw"));
-
-    // Get only the arguments after our script name
     const userArguments = allArgs.slice(scriptIndex + 1);
 
     const options = parseArguments(userArguments);
@@ -110,7 +116,8 @@ async function main() {
     await setTimeout(1000);
     const generatedPassword = generatePassword(
       options.length,
-      options.includeNumbers
+      options.includeNumbers,
+      options.includeCapitals
     );
     s.stop("Password Generated!");
 
@@ -118,7 +125,7 @@ async function main() {
 
     // Add this line for debugging
     console.log(
-      `Debug - Length: ${options.length}, Include Numbers: ${options.includeNumbers}`
+      `Debugging Log - Length: ${options.length}, Include Numbers: ${options.includeNumbers}, Include Capitals: ${options.includeCapitals}`
     );
   } catch (error) {
     console.error(pc.red(`Error: ${error.message}`));
