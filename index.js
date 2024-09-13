@@ -19,6 +19,9 @@ function printHelpMessage() {
         ${pc.yellow("-c, --capitals")}           ${pc.white(
     "Include capital letters in the password"
   )}
+          ${pc.yellow("-s, --symbols")}           ${pc.white(
+    "Include symbols in the password"
+  )}
         ${pc.yellow("-h, --help")}               ${pc.white(
     "Display this help message"
   )}
@@ -32,14 +35,20 @@ function printHelpMessage() {
   )}           ${pc.dim("# Generates a 12-character password")}
         ${pc.bold("generate-pw")} ${pc.yellow("-l")} ${pc.green(
     "10"
-  )} ${pc.yellow("-n -c")}     ${pc.dim(
-    "# Generates a 10-character password with numbers and capitals"
+  )} ${pc.yellow("-n -c -s")}     ${pc.dim(
+    "# Generates a 10-character password with numbers, capitals, and symbols"
   )}
   `);
 }
 
+// Parse the user's arguments to understand what they want
 function parseArguments(args) {
-  const options = { length: 8, includeNumbers: false, includeCapitals: false };
+  const options = {
+    length: 8,
+    includeNumbers: false,
+    includeCapitals: false,
+    includeSymbols: false,
+  };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -60,6 +69,8 @@ function parseArguments(args) {
       options.includeNumbers = true;
     } else if (arg === "-c" || arg === "--capitals") {
       options.includeCapitals = true;
+    } else if (arg === "-s" || arg === "--symbols") {
+      options.includeSymbols = true;
     } else if (arg === "-h" || arg === "--help") {
       options.help = true;
     } else if (arg.startsWith("-")) {
@@ -75,22 +86,34 @@ function parseArguments(args) {
       }
     }
   }
-
   return options;
 }
 
-function generatePassword(length, includeNumbers, includeCapitals) {
+// Generate password function. It takes parameters in the main function from the parse function to make sense of it all.
+function generatePassword(
+  length,
+  includeNumbers,
+  includeCapitals,
+  includeSymbols
+) {
+  // Define the characters we can use in different sets to keep things separate
   const lowerChars = "abcdefghijklmnopqrstuvwxyz";
   const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const numbers = "0123456789";
+  const symbols = "!@#$%^&*()_+";
 
+  // Start with lowercase letters
   let chars = lowerChars;
+  // Add other characters if the user wants them
   if (includeNumbers) chars += numbers;
   if (includeCapitals) chars += upperChars;
+  if (includeSymbols) chars += symbols;
 
+  // Make the actual password!
   let password = "";
   for (let i = 0; i < length; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    // Pick a random character and add it to the password
+    password += chars[Math.floor(Math.random() * chars.length)];
   }
   return password;
 }
@@ -98,7 +121,6 @@ function generatePassword(length, includeNumbers, includeCapitals) {
 async function main() {
   try {
     const allArgs = process.argv;
-    console.log(allArgs);
     const scriptIndex = allArgs.findIndex((arg) => arg.endsWith("generate-pw"));
     const userArguments = allArgs.slice(scriptIndex + 1);
 
@@ -111,22 +133,41 @@ async function main() {
 
     console.clear();
 
+    // Check if user didn't use any flags
+    if (
+      !options.includeNumbers &&
+      !options.includeCapitals &&
+      !options.includeSymbols &&
+      options.length === 8
+    ) {
+      console.log(
+        pc.yellow(
+          `${pc.bold("TIP:")} You can use flags to customize your password!`
+        )
+      );
+      console.log(
+        pc.yellow("Try using 'generate-pw -h' to see all available options.")
+      );
+      console.log();
+    }
+
     const s = p.spinner();
     s.start("Generating Password...");
-    await setTimeout(1000);
+    await setTimeout(2000);
     const generatedPassword = generatePassword(
       options.length,
       options.includeNumbers,
-      options.includeCapitals
+      options.includeCapitals,
+      options.includeSymbols
     );
-    s.stop("Password Generated!");
+    s.stop(`${pc.bgGreen(" Password Generated Successfully! ")}`);
 
     console.log(`\nYour password is: ${pc.green(generatedPassword)}\n`);
 
-    // Add this line for debugging
-    console.log(
-      `Debugging Log - Length: ${options.length}, Include Numbers: ${options.includeNumbers}, Include Capitals: ${options.includeCapitals}`
-    );
+    // Added this line for debugging - commented out for submission :)
+    // console.log(
+    //   `Debugging Log - Length: ${options.length}, Include Numbers: ${options.includeNumbers}, Include Capitals: ${options.includeCapitals} Symbols: ${options.includeSymbols}`
+    // );
   } catch (error) {
     console.error(pc.red(`Error: ${error.message}`));
     printHelpMessage();
