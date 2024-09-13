@@ -1,5 +1,6 @@
 {
   "name": "generate-password",
+  "student name": "Brian Janes",
   "version": "1.0.0",
   "description": "Generates a password of 8 lower case characters for the user. This can be edited using flags to include upper case, numbers and symbols.",
   "main": "index.js",
@@ -8,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "generate-password": "./index.js"
+    "generate-pw": "./index.js"
   },
   "keywords": [],
   "author": "",
