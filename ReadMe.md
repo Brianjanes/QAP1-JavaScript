@@ -8,11 +8,11 @@ To install this tool, follow these steps:
 
 1. Clone this repository:
    ```
-   git clone [your-repository-url]
+   git clone https://github.com/Brianjanes/QAP1-JavaScript.git
    ```
 2. Navigate to the project directory:
    ```
-   cd password-generator-cli
+   cd QAP1-JavaScript
    ```
 3. Install the dependencies:
    ```
@@ -34,15 +34,16 @@ generate-pw
 ```
 
 This will generate an 8-character password with only lowercase letters.
-This type of password is generally not secure!
+
+TIP: This type of password is generally not secure!
 
 ### Options
 
-- `-l, --length <number>`: Set the length of the password (default: 8)
-- `-n, --numbers`: Include numbers in the password
-- `-c, --capitals`: Include capital letters in the password
-- `-s, --symbols`: Include symbols in the password
-- `-h, --help`: Display help message
+- `-l, --length <number>`: Set the length of the password (default: 8, recommended: 16 +)
+- `-n, --numbers`: Includes numbers in the password
+- `-c, --capitals`: Includes capital letters in the password
+- `-s, --symbols`: Includes symbols in the password
+- `-h, --help`: Displays help message
 
 ### Examples
 
@@ -65,27 +66,20 @@ generate-pw -l 16 -n -c -s
 
 ```
 
-## Features
-
-- Customizable password length
-- Option to include numbers
-- Option to include capital letters
-- Option to include symbols
-- Colorful console output for better readability
-
 ## Password Best Practices
 
 While this tool helps you generate random passwords, it's important to follow these best practices for password security:
 
-- Longer passwords are generally more secure. Aim for at least 12 characters, but longer is better.
+- Longer passwords are generally more secure. Aim for at least 16 characters, but longer is better.
 - Combine lowercase and uppercase letters, numbers, and symbols to increase complexity.
 - Don't use easily guessable information like birthdays, names, or common words.
 - Never reuse passwords across different accounts.
-- Change your passwords periodically, especially for critical accounts.
-- Use a reputable password manager to securely store and generate complex passwords.
+- Change your passwords periodically (some say quarterly), especially for critical accounts.
 - Where possible, enable two-factor authentication for an extra layer of security.
 
 Remember, while this tool generates random passwords, the security of the password also depends on how it's used and stored.
+
+Check out [Have I Been Pwned](https://www.haveibeenpwned.com) to see if any of your password have been leaked!
 
 ## Dependencies
 
